@@ -1,0 +1,16 @@
+User Profile
+
+Name: Tamim Hossain
+Academic Background: B.Sc. in Computer Science and Engineering
+
+Professional Interests:
+- Artificial Intelligence
+- Machine Learning
+- Deep Learning
+- Computer Vision
+- Natural Language Processing
+- Generative AI
+- Attention Mechanisms
+- AI Agents
+- Multi-Agent Systems
+- Autonomous AI Systems
