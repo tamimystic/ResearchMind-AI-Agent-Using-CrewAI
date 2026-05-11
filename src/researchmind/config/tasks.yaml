@@ -1,260 +1,160 @@
-orchestrator_task:
-  description: >
-    Coordinate the entire research intelligence workflow for the uploaded
-    research paper. Ensure every specialized task is executed in the correct
-    sequence and maintain consistency across all outputs.
-
-    The workflow must follow this order:
-
-    1. Summary Analysis
-    2. Methodology Explanation
-    3. Mathematical Concept Analysis
-    4. Limitation Analysis
-    5. Related Research Discovery
-    6. Implementation Roadmap
-    7. Code Generation
-    8. Quiz Generation
-    9. Final Research Report
-
-    Ensure all outputs are logically connected and context-aware.
-
-  expected_output: >
-    A complete execution plan ensuring smooth coordination of all
-    research analysis stages.
-
-  agent: orchestrator_agent
-
-
 summary_task:
   description: >
-    Analyze the uploaded research paper and generate a comprehensive,
-    structured, and beginner-friendly summary.
+    Summarize the topic: {research_topic}
 
-    The summary must include:
-
-    - Research problem
-    - Objective of the paper
+    Include:
+    - Research objective
     - Proposed solution
-    - Method overview
-    - Key findings
-    - Main contribution
+    - Key contribution
     - Real-world importance
 
-    Provide three levels of explanation:
-
-    1. Beginner-friendly summary
-    2. Technical summary
-    3. One-minute quick understanding
+    Keep response under 150 words.
 
   expected_output: >
-    A clean, structured research paper summary with beginner,
-    technical, and quick-understanding sections.
+    Short structured summary.
 
   agent: summary_agent
 
 
 methodology_task:
   description: >
-    Analyze the methodology section of the research paper and explain
-    the research workflow in a structured and implementation-friendly way.
+    Explain the methodology of:
+    {research_topic}
 
-    The explanation must include:
-
-    - Dataset information
-    - Data preprocessing
+    Include:
+    - Dataset
+    - Preprocessing
     - Model architecture
-    - Algorithms used
-    - Training strategy
-    - Evaluation techniques
-    - Performance metrics
+    - Training process
+    - Evaluation
 
-    Explain the workflow step-by-step so a student or developer
-    can understand how the research was conducted.
+    Keep response under 200 words.
 
   expected_output: >
-    A detailed methodology explanation broken into understandable,
-    reproducible steps.
+    Step-by-step methodology explanation.
 
   agent: methodology_agent
 
 
 math_task:
   description: >
-    Identify all mathematical equations, formulas, loss functions,
-    optimization methods, and technical calculations used in the paper.
+    Explain mathematical concepts related to:
+    {research_topic}
 
-    For every important mathematical concept:
+    Include:
+    - Loss function
+    - Optimization
+    - Important formulas
+    - Beginner explanation
 
-    - Explain what it means
-    - Explain each variable
-    - Explain the intuition
-    - Explain why it is used
-    - Provide beginner-friendly interpretation
-    - Provide technical interpretation
-
-    Avoid overly complex mathematical language.
+    Keep response under 200 words.
 
   expected_output: >
-    A clear explanation of mathematical concepts with intuition,
-    variable meaning, and practical understanding.
+    Mathematical explanation.
 
   agent: math_agent
 
 
 limitation_task:
   description: >
-    Critically analyze the research paper and identify limitations,
-    weaknesses, risks, missing comparisons, biases, or future
-    improvement opportunities.
+    Analyze possible limitations of:
+    {research_topic}
 
-    Consider:
-
+    Include:
     - Dataset limitations
-    - Generalization issues
     - Overfitting risks
-    - Weak baselines
-    - Missing experiments
-    - Scalability concerns
-    - Practical deployment challenges
+    - Scalability
+    - Weaknesses
+    - Future improvements
 
-    Be objective, fair, and constructive.
+    Keep response under 150 words.
 
   expected_output: >
-    A professional limitation analysis with constructive criticism
-    and future improvement suggestions.
+    Research limitations.
 
   agent: limitation_agent
 
 
 related_papers_task:
   description: >
-    Identify highly relevant research papers related to the uploaded paper.
+    Suggest 5 related papers for:
+    {research_topic}
 
-    Use:
+    Explain briefly:
+    - Why relevant
+    - Main similarity
 
-    - Keywords
-    - Research objective
-    - Methodology similarity
-    - Domain relevance
-    - Semantic similarity
-
-    Recommend at least 5 highly relevant papers and explain:
-
-    - Why they are relevant
-    - Similarity with the current paper
-    - Key difference from the current paper
+    Keep response concise.
 
   expected_output: >
-    A curated list of highly relevant research papers with explanations
-    of relevance and comparison.
+    Related research recommendations.
 
   agent: related_papers_agent
 
 
 implementation_task:
   description: >
-    Convert the uploaded research paper into a practical implementation
-    roadmap.
+    Create an implementation roadmap for:
+    {research_topic}
 
-    Create a step-by-step execution guide that explains:
-
+    Include:
     - Dataset preparation
-    - Data preprocessing
-    - Model development
-    - Training process
-    - Hyperparameter tuning
-    - Evaluation strategy
-    - Deployment possibility
+    - Preprocessing
+    - Model building
+    - Training
+    - Evaluation
 
-    The roadmap should be realistic and suitable for a student-level
-    implementation.
+    Keep response under 200 words.
 
   expected_output: >
-    A practical implementation roadmap with realistic,
-    actionable steps.
+    Practical implementation roadmap.
 
   agent: implementation_agent
 
 
 code_generation_task:
   description: >
-    Generate clean, modular, and production-friendly code inspired by
-    the uploaded research paper.
-
-    Requirements:
-
-    - Prefer TensorFlow/Keras by default
-    - Use modular structure
-    - Follow clean coding practices
-    - Add meaningful function names
-    - Ensure readability
-    - Keep beginner friendliness
+    Generate a TensorFlow/Keras implementation blueprint for:
+    {research_topic}
 
     Include:
+    - Model structure
+    - Training pipeline
+    - Evaluation
 
-    - model architecture
-    - training pipeline
-    - preprocessing
-    - evaluation
-
-    If full implementation is not possible, generate a high-quality
-    implementation blueprint.
+    Keep code concise.
 
   expected_output: >
-    Clean, modular implementation code or a high-quality
-    implementation template.
+    Clean implementation template.
 
   agent: code_agent
 
 
 quiz_task:
   description: >
-    Generate educational materials to reinforce understanding of
-    the uploaded research paper.
+    Create learning questions for:
+    {research_topic}
 
-    Create:
+    Generate:
+    - 5 MCQ
+    - 3 short questions
+    - 3 viva questions
 
-    - 10 MCQ questions
-    - 5 short conceptual questions
-    - 5 interview/viva questions
-    - 3 advanced critical-thinking questions
-
-    Questions should cover:
-
-    - Concepts
-    - Methodology
-    - Mathematics
-    - Implementation
-    - Research contribution
+    Keep concise.
 
   expected_output: >
-    A structured learning assessment package including quizzes,
-    conceptual questions, and interview questions.
+    Quiz materials.
 
   agent: quiz_agent
 
 
 report_generation_task:
   description: >
-    Combine outputs from all previous tasks into one professionally
-    structured, cohesive, and readable final research report.
+    Combine all previous outputs into a final report.
 
-    The report must contain:
-
-    1. Executive Summary
-    2. Research Summary
-    3. Methodology Analysis
-    4. Mathematical Concepts
-    5. Limitations and Criticism
-    6. Related Research Papers
-    7. Implementation Roadmap
-    8. Code Generation Overview
-    9. Quiz and Learning Materials
-    10. Final Conclusion
-
-    Ensure smooth transitions, readability, and academic quality.
+    Keep concise and readable.
 
   expected_output: >
-    A professional, polished, human-friendly final research report.
+    Final research report.
 
   agent: report_agent

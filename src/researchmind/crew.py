@@ -1,188 +1,194 @@
 from crewai import Agent, Crew, Process, Task, LLM
 from crewai.project import CrewBase, agent, crew, task
+from dotenv import load_dotenv
+import os
+
+load_dotenv()
+
+groq_api_key = os.getenv("GROQ_API_KEY")
+openrouter_api_key = os.getenv("OPENROUTER_API_KEY")
+cerebras_api_key = os.getenv("CEREBRAS_API_KEY")
+
+required_keys = {
+    "GROQ_API_KEY": groq_api_key,
+    "OPENROUTER_API_KEY": openrouter_api_key,
+    "CEREBRAS_API_KEY": cerebras_api_key
+}
+
+missing_keys = [
+    key for key, value in required_keys.items()
+    if not value
+]
+
+if missing_keys:
+    raise ValueError(
+        f"Missing API keys in .env: {', '.join(missing_keys)}"
+    )
 
 
 @CrewBase
 class ResearchMindCrew:
-    """ResearchMind AI Crew"""
-
     agents_config = "config/agents.yaml"
     tasks_config = "config/tasks.yaml"
 
-    # LLM Configuration
     general_llm = LLM(
-        model="ollama/qwen3:4b",
+        model="groq/llama-3.1-8b-instant",
+        api_key=groq_api_key,
         temperature=0.3
     )
 
     reasoning_llm = LLM(
-        model="ollama/llama3.1",
+        model="cerebras/llama3.1-8b",
+        api_key=cerebras_api_key,
+        temperature=0.2
+    )
+
+    research_llm = LLM(
+        model="openrouter/deepseek/deepseek-chat",
+        api_key=openrouter_api_key,
         temperature=0.2
     )
 
     coding_llm = LLM(
         model="ollama/qwen2.5-coder:3b",
+        base_url="http://localhost:11434",
         temperature=0.1
     )
 
-    # Agents
-    @agent
-    def orchestrator_agent(self) -> Agent:
-        return Agent(
-            config=self.agents_config["orchestrator_agent"],
-            llm=self.reasoning_llm,
-            verbose=True,
-            allow_delegation=False,
-            memory=False
-        )
+    local_llm = LLM(
+        model="ollama/qwen2.5:3b",
+        base_url="http://localhost:11434",
+        temperature=0.3
+    )
 
     @agent
-    def summary_agent(self) -> Agent:
+    def summary_agent(self):
         return Agent(
             config=self.agents_config["summary_agent"],
             llm=self.general_llm,
-            verbose=True,
-            memory=False
+            verbose=False
         )
 
     @agent
-    def methodology_agent(self) -> Agent:
+    def methodology_agent(self):
         return Agent(
             config=self.agents_config["methodology_agent"],
-            llm=self.general_llm,
-            verbose=True,
-            memory=False
+            llm=self.research_llm,
+            verbose=False
         )
 
     @agent
-    def math_agent(self) -> Agent:
+    def math_agent(self):
         return Agent(
             config=self.agents_config["math_agent"],
             llm=self.reasoning_llm,
-            verbose=True,
-            memory=False
+            verbose=False
         )
 
     @agent
-    def limitation_agent(self) -> Agent:
+    def limitation_agent(self):
         return Agent(
             config=self.agents_config["limitation_agent"],
             llm=self.general_llm,
-            verbose=True,
-            memory=False
+            verbose=False
         )
 
     @agent
-    def related_papers_agent(self) -> Agent:
+    def related_papers_agent(self):
         return Agent(
             config=self.agents_config["related_papers_agent"],
-            llm=self.general_llm,
-            verbose=True,
-            memory=False
+            llm=self.research_llm,
+            verbose=False
         )
 
     @agent
-    def implementation_agent(self) -> Agent:
+    def implementation_agent(self):
         return Agent(
             config=self.agents_config["implementation_agent"],
             llm=self.general_llm,
-            verbose=True,
-            memory=False
+            verbose=False
         )
 
     @agent
-    def code_agent(self) -> Agent:
+    def code_agent(self):
         return Agent(
             config=self.agents_config["code_agent"],
             llm=self.coding_llm,
-            verbose=True,
-            memory=False
+            verbose=False
         )
 
     @agent
-    def quiz_agent(self) -> Agent:
+    def quiz_agent(self):
         return Agent(
             config=self.agents_config["quiz_agent"],
-            llm=self.reasoning_llm,
-            verbose=True,
-            memory=False
+            llm=self.local_llm,
+            verbose=False
         )
 
     @agent
-    def report_agent(self) -> Agent:
+    def report_agent(self):
         return Agent(
             config=self.agents_config["report_agent"],
             llm=self.general_llm,
-            verbose=True,
-            memory=False
-        )
-
-    # Tasks
-    @task
-    def orchestrator_task(self) -> Task:
-        return Task(
-            config=self.tasks_config["orchestrator_task"]
+            verbose=False
         )
 
     @task
-    def summary_task(self) -> Task:
+    def summary_task(self):
         return Task(
             config=self.tasks_config["summary_task"]
         )
 
     @task
-    def methodology_task(self) -> Task:
+    def methodology_task(self):
         return Task(
             config=self.tasks_config["methodology_task"]
         )
 
     @task
-    def math_task(self) -> Task:
+    def math_task(self):
         return Task(
             config=self.tasks_config["math_task"]
         )
 
     @task
-    def limitation_task(self) -> Task:
+    def limitation_task(self):
         return Task(
             config=self.tasks_config["limitation_task"]
         )
 
     @task
-    def related_papers_task(self) -> Task:
+    def related_papers_task(self):
         return Task(
             config=self.tasks_config["related_papers_task"]
         )
 
     @task
-    def implementation_task(self) -> Task:
+    def implementation_task(self):
         return Task(
             config=self.tasks_config["implementation_task"]
         )
 
     @task
-    def code_generation_task(self) -> Task:
+    def code_generation_task(self):
         return Task(
             config=self.tasks_config["code_generation_task"]
         )
 
     @task
-    def quiz_task(self) -> Task:
+    def quiz_task(self):
         return Task(
             config=self.tasks_config["quiz_task"]
         )
 
     @task
-    def report_generation_task(self) -> Task:
+    def report_generation_task(self):
         return Task(
             config=self.tasks_config["report_generation_task"]
         )
 
-    # Crew
     @crew
-    def crew(self) -> Crew:
-        """Create ResearchMind Crew"""
-
+    def crew(self):
         return Crew(
             agents=self.agents,
             tasks=self.tasks,
