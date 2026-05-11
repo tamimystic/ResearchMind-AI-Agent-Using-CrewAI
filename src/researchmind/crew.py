@@ -34,13 +34,13 @@ class ResearchMindCrew:
     general_llm = LLM(
         model="groq/llama-3.1-8b-instant",
         api_key=groq_api_key,
-        temperature=0.3
+        temperature=0.2
     )
 
     reasoning_llm = LLM(
         model="cerebras/llama3.1-8b",
         api_key=cerebras_api_key,
-        temperature=0.2
+        temperature=0.1
     )
 
     research_llm = LLM(
@@ -58,7 +58,13 @@ class ResearchMindCrew:
     local_llm = LLM(
         model="ollama/qwen2.5:3b",
         base_url="http://localhost:11434",
-        temperature=0.3
+        temperature=0.2
+    )
+
+    report_llm = LLM(
+        model="ollama/qwen3:4b",
+        base_url="http://localhost:11434",
+        temperature=0.2
     )
 
     @agent
@@ -66,7 +72,8 @@ class ResearchMindCrew:
         return Agent(
             config=self.agents_config["summary_agent"],
             llm=self.general_llm,
-            verbose=False
+            verbose=False,
+            memory=False
         )
 
     @agent
@@ -74,7 +81,8 @@ class ResearchMindCrew:
         return Agent(
             config=self.agents_config["methodology_agent"],
             llm=self.research_llm,
-            verbose=False
+            verbose=False,
+            memory=False
         )
 
     @agent
@@ -82,7 +90,8 @@ class ResearchMindCrew:
         return Agent(
             config=self.agents_config["math_agent"],
             llm=self.reasoning_llm,
-            verbose=False
+            verbose=False,
+            memory=False
         )
 
     @agent
@@ -90,7 +99,8 @@ class ResearchMindCrew:
         return Agent(
             config=self.agents_config["limitation_agent"],
             llm=self.general_llm,
-            verbose=False
+            verbose=False,
+            memory=False
         )
 
     @agent
@@ -98,7 +108,8 @@ class ResearchMindCrew:
         return Agent(
             config=self.agents_config["related_papers_agent"],
             llm=self.research_llm,
-            verbose=False
+            verbose=False,
+            memory=False
         )
 
     @agent
@@ -106,7 +117,8 @@ class ResearchMindCrew:
         return Agent(
             config=self.agents_config["implementation_agent"],
             llm=self.general_llm,
-            verbose=False
+            verbose=False,
+            memory=False
         )
 
     @agent
@@ -114,7 +126,8 @@ class ResearchMindCrew:
         return Agent(
             config=self.agents_config["code_agent"],
             llm=self.coding_llm,
-            verbose=False
+            verbose=False,
+            memory=False
         )
 
     @agent
@@ -122,15 +135,17 @@ class ResearchMindCrew:
         return Agent(
             config=self.agents_config["quiz_agent"],
             llm=self.local_llm,
-            verbose=False
+            verbose=False,
+            memory=False
         )
 
     @agent
     def report_agent(self):
         return Agent(
             config=self.agents_config["report_agent"],
-            llm=self.general_llm,
-            verbose=False
+            llm=self.report_llm,
+            verbose=False,
+            memory=False
         )
 
     @task
