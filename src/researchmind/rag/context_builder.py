@@ -12,7 +12,7 @@ class ContextBuilder:
     def build_context(
         self,
         query,
-        top_k=3
+        top_k=7
     ):
         context = (
             self.retriever
@@ -21,6 +21,14 @@ class ContextBuilder:
                 top_k=top_k
             )
         )
+
+        if not context.strip():
+            return f"""
+No relevant research context found.
+
+Research Query:
+{query}
+""".strip()
 
         return f"""
 Relevant Research Context:

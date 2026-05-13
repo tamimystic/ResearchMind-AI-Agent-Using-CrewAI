@@ -1,33 +1,31 @@
-from researchmind.crew import ResearchMindCrew
+from researchmind.crew import (
+    ResearchMindCrew
+)
 
 
 def run():
-    """
-    Execute the ResearchMind AI workflow.
-    """
-
     print("\n" + "=" * 80)
     print("ResearchMind AI")
     print("Multi-Agent Research Intelligence System")
     print("=" * 80)
 
-    print("\nStarting ResearchMind workflow...\n")
-
-    inputs = {
-        "research_topic": input(
-            "Enter research topic or paper title: "
-        )
-    }
+    print(
+        "\nStarting ResearchMind workflow...\n"
+    )
 
     try:
         result = (
             ResearchMindCrew()
             .crew()
-            .kickoff(inputs=inputs)
+            .kickoff(
+                inputs={}
+            )
         )
 
         print("\n" + "=" * 80)
-        print("ResearchMind Final Report")
+        print(
+            "ResearchMind Final Report"
+        )
         print("=" * 80)
 
         print("\n")
@@ -38,7 +36,9 @@ def run():
         print("Workflow Failed")
         print("=" * 80)
 
-        print(f"\nError: {str(error)}")
+        print(
+            f"\nError: {str(error)}"
+        )
 
 
 if __name__ == "__main__":
