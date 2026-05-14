@@ -110,7 +110,8 @@ class ResearchMindCrew:
     heavy_local_llm = LLM(
         model="ollama/llama3.1",
         base_url="http://localhost:11434",
-        temperature=0.2
+        temperature=0.2,
+        timeout=180
     )
 
     @agent
@@ -318,20 +319,57 @@ class ResearchMindCrew:
         context = (
             self.context_loader
             .load_context(
-                "related"
+                """
+                Find related research papers.
+
+                Focus on:
+                methodology,
+                architecture,
+                CNN,
+                Vision Transformer,
+                transfer learning,
+                plant disease detection,
+                image classification,
+                feature extraction,
+                disease detection.
+                """
             )
         )
 
         return Task(
             description=f"""
-            Suggest related papers
-            using ONLY this context.
+            Suggest 5 research papers
+            that are most relevant to
+            the uploaded research paper.
 
+            Use ONLY the provided
+            research context.
+
+            Infer related papers based on:
+            - methodology
+            - model architecture
+            - CNN usage
+            - Vision Transformer
+            - transfer learning
+            - feature extraction
+            - plant disease classification
+
+            Avoid hallucination.
+
+            If exact paper names are not
+            found in context, infer likely
+            related research directions.
+                    
             {context}
             """,
             expected_output="""
-            Related papers with
-            relevance explanation.
+            A list of 5 related research papers.
+
+            For each paper include:
+            1. probable paper title
+            2. why it is relevant
+            3. similarity with uploaded paper
+            4. methodology overlap
             """,
             agent=self.related_papers_agent()
         )

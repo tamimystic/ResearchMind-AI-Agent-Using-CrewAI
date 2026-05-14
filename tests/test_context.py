@@ -4,23 +4,13 @@ from researchmind.tools.context_loader import (
 
 
 def test_context():
+
     loader = (
         ContextLoader()
     )
 
     query = """
-    Explain the methodology.
-
-    Include:
-    dataset,
-    preprocessing,
-    augmentation,
-    architecture,
-    feature extraction,
-    training process,
-    optimizer,
-    evaluation metrics,
-    final workflow.
+    related
     """
 
     context = (

@@ -8,6 +8,7 @@ from researchmind.rag.vector_store import (
 
 
 class Retriever:
+
     def __init__(self):
         self.embedding_model = (
             EmbeddingGenerator()
@@ -21,91 +22,117 @@ class Retriever:
         self,
         query
     ):
+
         query_map = {
+
             "methodology":
             """
-            Focus on methodology section.
+            Find methodology related sections.
 
-            Include:
+            Focus on:
             dataset,
-            data collection,
             preprocessing,
-            augmentation,
             feature extraction,
             architecture,
-            workflow,
             algorithm,
             training process,
-            optimizer,
-            hyperparameters,
-            implementation,
             evaluation metrics,
-            experiment setup,
-            classification pipeline.
+            workflow,
+            implementation steps.
             """,
 
             "summary":
             """
-            Focus on:
+            Find:
             abstract,
             introduction,
-            research problem,
-            objective,
+            research objective,
             contribution,
-            motivation,
             key findings,
             conclusion.
             """,
 
             "math":
             """
-            Focus on:
+            Find:
             equations,
             formulas,
-            mathematical model,
-            loss function,
-            optimization,
-            feature extraction equations,
-            transformer equations,
-            accuracy calculation.
+            loss functions,
+            optimization methods,
+            mathematical concepts,
+            feature extraction formulas.
             """,
 
             "limitation":
             """
-            Focus on:
+            Find:
             limitations,
-            weakness,
+            weaknesses,
             future work,
             constraints,
-            scalability,
-            challenges,
             bias,
-            drawbacks.
+            scalability concerns.
             """,
 
             "implementation":
             """
-            Focus on:
+            Find:
             implementation details,
             architecture,
-            pipeline,
-            workflow,
             preprocessing,
-            model setup,
+            workflow,
             deployment,
-            system design.
+            pipeline,
+            training flow.
             """,
 
-            "dataset":
+            "related":
             """
+            Find sections discussing:
+
+            related work,
+            literature review,
+            prior research,
+            previous studies,
+            comparison with previous models,
+            baseline methods,
+            state-of-the-art methods,
+            existing approaches.
+
             Focus on:
-            dataset,
-            data acquisition,
-            preprocessing,
-            augmentation,
-            train test split,
-            data distribution,
-            class information.
+            CNN,
+            Vision Transformer (ViT),
+            transfer learning,
+            plant disease classification,
+            image classification,
+            feature extraction.
+
+            Prefer:
+            comparison tables,
+            discussion of previous methods,
+            survey discussions,
+            benchmark comparisons.
+
+            Avoid:
+            conclusion,
+            dataset details,
+            implementation steps,
+            training procedure,
+            author biography,
+            references,
+            citation list.
+            """,
+
+            "report":
+            """
+            Find:
+            abstract,
+            methodology,
+            results,
+            findings,
+            contribution,
+            conclusion,
+            limitations.
             """
         }
 
@@ -113,98 +140,24 @@ class Retriever:
             query.lower()
         )
 
-        for key, value in query_map.items():
+        for key in query_map:
+
             if key in lower_query:
+
                 return f"""
                 {query}
 
-                {value}
+                {query_map[key]}
                 """.strip()
 
         return query
 
-    def _rerank_results(
-        self,
-        results,
-        query
-    ):
-        keyword_priority = [
-            "methodology",
-            "dataset",
-            "data acquisition",
-            "preprocessing",
-            "augmentation",
-            "feature extraction",
-            "transfer learning",
-            "vision transformer",
-            "vit",
-            "architecture",
-            "workflow",
-            "training",
-            "optimizer",
-            "epoch",
-            "evaluation",
-            "classification",
-            "accuracy",
-            "loss"
-        ]
-
-        negative_keywords = [
-            "results",
-            "discussion",
-            "comparison",
-            "table",
-            "accuracy improved",
-            "performance comparison"
-        ]
-
-        query_lower = (
-            query.lower()
-        )
-
-        scored_results = []
-
-        for chunk in results:
-            score = 0
-            chunk_lower = (
-                chunk.lower()
-            )
-
-            for keyword in keyword_priority:
-                if keyword in chunk_lower:
-                    score += 1
-
-            for word in query_lower.split():
-                if word in chunk_lower:
-                    score += 1
-
-            for keyword in negative_keywords:
-                if keyword in chunk_lower:
-                    score -= 2
-
-            scored_results.append(
-                (
-                    score,
-                    chunk
-                )
-            )
-
-        scored_results.sort(
-            reverse=True,
-            key=lambda x: x[0]
-        )
-
-        return [
-            chunk
-            for _, chunk
-            in scored_results
-        ]
-
     def retrieve(
         self,
         query,
-        top_k=3
+        top_k=4
     ):
+
         enhanced_query = (
             self._enhance_query(
                 query
@@ -222,17 +175,10 @@ class Retriever:
             self.vector_store
             .search(
                 query_embedding,
-                top_k * 2
-            )
-        )
-
-        reranked_results = (
-            self._rerank_results(
-                results,
-                query
+                top_k
             )
         )
 
         return "\n\n".join(
-            reranked_results[:top_k]
+            results
         )
